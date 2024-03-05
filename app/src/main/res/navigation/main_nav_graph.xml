@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/github_search">
+
+    <action
+        android:id="@+id/navigate_to_settings"
+        app:destination="@id/settings" />
+
+    <action
+        android:id="@+id/navigate_to_repo_detail"
+        app:destination="@id/github_repo_detail" />
+
+    <fragment
+        android:id="@+id/github_search"
+        android:name="edu.oregonstate.cs492.githubsearchwithroom.ui.GitHubSearchFragment"
+        android:label="@string/label_github_search">
+        <action
+            android:id="@+id/navigate_to_bookmarked_repos"
+            app:destination="@id/bookmarked_repos" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookmarked_repos"
+        android:name="edu.oregonstate.cs492.githubsearchwithroom.ui.BookmarkedReposFragment"
+        android:label="@string/label_bookmarked_repos" />
+
+    <fragment
+        android:id="@+id/github_repo_detail"
+        android:name="edu.oregonstate.cs492.githubsearchwithroom.ui.GitHubRepoDetailFragment"
+        android:label="@string/label_github_repo_detail">
+        <argument
+            android:name="repo"
+            app:argType="edu.oregonstate.cs492.githubsearchwithroom.data.GitHubRepo"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:label="@string/label_settings"
+        android:name="edu.oregonstate.cs492.githubsearchwithroom.ui.SettingsFragment" />
+
+</navigation>

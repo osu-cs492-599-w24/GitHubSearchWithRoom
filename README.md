@@ -1,0 +1,3 @@
+# GitHub Search with Room
+
+In this project, we'll persist data in an SQLite database within our GitHub search app using the [Room Persistence Library](https://developer.android.com/training/data-storage/room/).  To work with this project, you can clone it from GitHub onto your development machine and then import it into Android Studio using File → New → Import...
