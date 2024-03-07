@@ -1,6 +1,7 @@
 package edu.oregonstate.cs492.githubsearchwithroom.data
 
 import androidx.room.Entity
+import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

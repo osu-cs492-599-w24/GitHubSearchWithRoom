@@ -13,6 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
@@ -20,7 +21,10 @@ import edu.oregonstate.cs492.githubsearchwithroom.R
 
 class GitHubRepoDetailFragment : Fragment(R.layout.fragment_github_repo_detail) {
     private val args: GitHubRepoDetailFragmentArgs by navArgs()
+    private val viewModel: BookmarkedReposViewModel by viewModels()
     private var isBookmarked = false
+
+    private lateinit var bookmarkMenuItem: MenuItem
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,11 +37,32 @@ class GitHubRepoDetailFragment : Fragment(R.layout.fragment_github_repo_detail) 
         repoStarsTV.text = args.repo.stars.toString()
         repoDescriptionTV.text = args.repo.description
 
+        viewModel.getBookmarkedRepoByName(args.repo.name).observe(viewLifecycleOwner) { repo ->
+            when(repo) {
+                null -> {
+                    isBookmarked = false
+                    bookmarkMenuItem.icon = AppCompatResources.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_action_bookmark_off
+                    )
+                }
+                else -> {
+                    isBookmarked = true
+                    bookmarkMenuItem.icon = AppCompatResources.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_action_bookmark_on
+                    )
+                }
+            }
+            bookmarkMenuItem.isChecked = isBookmarked
+        }
+
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(R.menu.github_repo_detail_menu, menu)
+                    bookmarkMenuItem = menu.findItem(R.id.action_bookmark)
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -68,20 +93,12 @@ class GitHubRepoDetailFragment : Fragment(R.layout.fragment_github_repo_detail) 
      * clicks it.
      */
     private fun toggleRepoBookmark(menuItem: MenuItem) {
-        isBookmarked = !isBookmarked
-        menuItem.isChecked = isBookmarked
-        when (isBookmarked) {
+        when (!isBookmarked) {
             true -> {
-                menuItem.icon = AppCompatResources.getDrawable(
-                    requireContext(),
-                    R.drawable.ic_action_bookmark_on
-                )
+                viewModel.addBookmarkedRepo(args.repo)
             }
             false -> {
-                menuItem.icon = AppCompatResources.getDrawable(
-                    requireContext(),
-                    R.drawable.ic_action_bookmark_off
-                )
+                viewModel.removeBookmarkedRepo(args.repo)
             }
         }
     }
